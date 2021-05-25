@@ -1,10 +1,12 @@
-import React, { PureComponent } from 'react'
-import { Animate } from 'react-move'
-import { easeExpOut } from 'd3-ease'
+import React, {PureComponent} from 'react'
+import {Animate} from 'react-move'
+import {easeExpOut} from 'd3-ease'
+import logo from './savills-square.png';
+import nyc from './The_5_Boroughs_of_New_York_City.svg';
+import './Simple.css';
 
 const trackStyles = {
     borderRadius: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
     position: 'relative',
     margin: '5px 3px 10px',
     width: '100%',
@@ -12,20 +14,23 @@ const trackStyles = {
 
 }
 
-const hsize=100;
+const hsize = 100;
 
 class Sample extends PureComponent {
     state = {
         open: false,
+        fadeIn: 'map_start'
     }
 
     handleClick = () => {
-        this.setState({ open: !this.state.open })
+        this.setState({open: !this.state.open,
+            fadeIn: this.state.open?'fade-in-text':'map_start',
+        })
     }
 
     render() {
         return (
-            <div style={{height: '100%',width: '100%', display: 'block', position: 'fixed'}}>
+            <div style={{height: '100%', width: '100%', display: 'block', position: 'fixed'}}>
                 <button
                     onClick={this.handleClick}
                 >
@@ -33,40 +38,41 @@ class Sample extends PureComponent {
                 </button>
                 <Animate
                     start={() => ({
-                        x: hsize/2,
-                        scale: 1,
+                        x: hsize / 2,
+                        scale: 2,
+                        o: 0,
+                        tr: 0,
                     })}
                     update={() => ({
-                        x: [this.state.open ? hsize/2 : 0],
-                        scale: [this.state.open ? 1: 0.5],
-                        timing: { duration: 750, ease: easeExpOut },
+                        x: [this.state.open ? hsize / 2 : 0],
+                        scale: [this.state.open ? 2 : 0.5],
+                        o: [this.state.open ? 0 : 1],
+                        tr: [this.state.open ? -200: -500],
+                        timing: {duration: 750, ease: easeExpOut},
                     })}
                 >
                     {(state) => {
-                        const { x,scale } = state
-
+                        const {x, scale, o, tr} = state
                         return (
                             <div style={trackStyles}>
                                 <div
+                                    className='logoContainer'
                                     style={{
-                                        position: 'absolute',
-                                        borderRadius: 4,
-                                        opacity: 0.7,
                                         WebkitTransform: `translate3d(${x}vw, ${x}vh, 0) scale(${scale})`,
-                                        transitionDuration: `1s`,
                                         transform: `translate3d(${x}vw, ${x}vh, 0) scale(${scale})`,
-                                        transitionTimingFunction: `cubic-bezier(0.25,0.1,0.25,1)`
                                     }}
                                 >
-                                    <div style={{
-                                        position: 'relative',
-                                        left: '-50%',
-                                        top: '-75px',
-                                        width: 150,
-                                        height: 150,
-                                        backgroundColor: '#ff69b4',
-                                    }}></div>
+                                    <div className='logo'
+                                         style={{
+                                             /*backgroundColor: '#ff69b4', */
+                                             backgroundImage: `url(${logo})`,
+                                         }}></div>
                                 </div>
+                                <div className= {`map`}
+                                style={{
+                                    opacity: `${o}`,
+                                    backgroundPosition: `0 ${tr}%`,
+                                }}/>
                             </div>
                         )
                     }}
